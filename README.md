@@ -144,15 +144,15 @@ Once installed, GitHub Copilot will automatically use this skill when you:
 
 All guides include quick reference tables for fast lookup:
 
-| Topic | What You'll Find |
-|-------|------------------|
-| New project setup | Package structure, Maven POM, entry point |
-| REST endpoints | Controller patterns, DTOs, validation, error handling |
-| Database access | JPA entities, repositories, query methods, N+1 prevention |
-| Testing strategies | Unit tests, slice tests, integration tests with real DB |
-| Security setup | JWT filter chain, UserDetailsService, CORS config |
-| External APIs | Circuit breakers, timeouts, retry logic, correlation IDs |
-| Common errors | Troubleshooting table with causes and fixes |
+| Topic              | What You'll Find                                          |
+| ------------------ | --------------------------------------------------------- |
+| New project setup  | Package structure, Maven POM, entry point                 |
+| REST endpoints     | Controller patterns, DTOs, validation, error handling     |
+| Database access    | JPA entities, repositories, query methods, N+1 prevention |
+| Testing strategies | Unit tests, slice tests, integration tests with real DB   |
+| Security setup     | JWT filter chain, UserDetailsService, CORS config         |
+| External APIs      | Circuit breakers, timeouts, retry logic, correlation IDs  |
+| Common errors      | Troubleshooting table with causes and fixes               |
 
 ## 🎓 Best Practices Emphasized
 
@@ -167,7 +167,7 @@ This skill teaches and enforces:
 ✅ **Migrations, not ddl-auto** - Flyway for schema management  
 ✅ **Lazy associations by default** - Prevent N+1 queries  
 ✅ **Circuit breakers for external calls** - Prevent cascading failures  
-✅ **Structured logging** - Proper observability  
+✅ **Structured logging** - Proper observability
 
 ## 🔧 Customization
 

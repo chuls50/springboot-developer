@@ -40,13 +40,13 @@ resilience4j:
     instances:
       paymentService:
         registerHealthIndicator: true
-        slidingWindowSize: 10                      # last N calls tracked
-        minimumNumberOfCalls: 5                    # min calls before circuit can open
-        permittedNumberOfCallsInHalfOpenState: 3   # test calls before closing
-        failureRateThreshold: 50                   # open if >50% fail
-        waitDurationInOpenState: 30s               # how long to wait before half-open
-        slowCallDurationThreshold: 2s              # call is "slow" if >2s
-        slowCallRateThreshold: 50                  # open if >50% are slow
+        slidingWindowSize: 10 # last N calls tracked
+        minimumNumberOfCalls: 5 # min calls before circuit can open
+        permittedNumberOfCallsInHalfOpenState: 3 # test calls before closing
+        failureRateThreshold: 50 # open if >50% fail
+        waitDurationInOpenState: 30s # how long to wait before half-open
+        slowCallDurationThreshold: 2s # call is "slow" if >2s
+        slowCallRateThreshold: 50 # open if >50% are slow
 ```
 
 **Usage:**
@@ -92,7 +92,7 @@ resilience4j:
           - org.springframework.web.client.ResourceAccessException
           - java.net.ConnectException
         ignoreExceptions:
-          - com.example.myapp.exception.BusinessException  # don't retry business logic errors
+          - com.example.myapp.exception.BusinessException # don't retry business logic errors
 ```
 
 **Usage:**
@@ -115,9 +115,9 @@ resilience4j:
   ratelimiter:
     instances:
       externalApi:
-        limitForPeriod: 50        # max 50 calls
-        limitRefreshPeriod: 1s    # per second
-        timeoutDuration: 0s       # 0 = fail immediately if limit exceeded; >0 = wait
+        limitForPeriod: 50 # max 50 calls
+        limitRefreshPeriod: 1s # per second
+        timeoutDuration: 0s # 0 = fail immediately if limit exceeded; >0 = wait
 ```
 
 **Usage:**
@@ -206,7 +206,7 @@ public class GitHubService {
         return client.get()
             .uri("/users/{username}", username)
             .retrieve()
-            .onStatus(HttpStatusCode::is4xxClientError, 
+            .onStatus(HttpStatusCode::is4xxClientError,
                 res -> Mono.error(new UserNotFoundException(username)))
             .onStatus(HttpStatusCode::is5xxServerError,
                 res -> Mono.error(new GithubApiException("GitHub API unavailable")))
@@ -236,7 +236,7 @@ public Mono<OrderResponse> createOrder(CreateOrderRequest req) {
 ```java
 // Strategy 1: onStatus — customize per status code
 .retrieve()
-.onStatus(HttpStatusCode::is4xxClientError, res -> 
+.onStatus(HttpStatusCode::is4xxClientError, res ->
     res.bodyToMono(String.class)
        .flatMap(body -> Mono.error(new ApiException("Client error: " + body))))
 
@@ -263,7 +263,7 @@ public WebClient webClient(WebClient.Builder builder) {
     HttpClient httpClient = HttpClient.create()
         .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
         .responseTimeout(Duration.ofSeconds(10));
-    
+
     return builder
         .clientConnector(new ReactorClientHttpConnector(httpClient))
         .build();
@@ -382,7 +382,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      acks: all  # wait for all replicas to ack
+      acks: all # wait for all replicas to ack
 ```
 
 ### Producer
@@ -399,7 +399,7 @@ public class OrderEventPublisher {
         OrderPlacedEvent event = new OrderPlacedEvent(
             order.getId(), order.getUserId(), order.getTotal()
         );
-        
+
         kafkaTemplate.send("order-events", order.getId().toString(), event)
             .whenComplete((result, ex) -> {
                 if (ex != null) {
@@ -449,10 +449,10 @@ public class OrderEventConsumer {
 public class KafkaConsumerConfig {
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderPlacedEvent> 
+    public ConcurrentKafkaListenerContainerFactory<String, OrderPlacedEvent>
             kafkaListenerContainerFactory(
                 ConsumerFactory<String, OrderPlacedEvent> consumerFactory) {
-        
+
         var factory = new ConcurrentKafkaListenerContainerFactory<String, OrderPlacedEvent>();
         factory.setConsumerFactory(consumerFactory);
         factory.setCommonErrorHandler(new DefaultErrorHandler(
@@ -463,14 +463,14 @@ public class KafkaConsumerConfig {
 
     // Dead Letter Topic (DLT) pattern
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderPlacedEvent> 
+    public ConcurrentKafkaListenerContainerFactory<String, OrderPlacedEvent>
             kafkaListenerContainerFactoryWithDlt(
                 ConsumerFactory<String, OrderPlacedEvent> consumerFactory,
                 KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate) {
-        
+
         var factory = new ConcurrentKafkaListenerContainerFactory<String, OrderPlacedEvent>();
         factory.setConsumerFactory(consumerFactory);
-        
+
         DefaultErrorHandler errorHandler = new DefaultErrorHandler(
             new DeadLetterPublishingRecoverer(kafkaTemplate),
             new FixedBackOff(1000L, 3L)
@@ -527,7 +527,7 @@ resilience4j:
         retryExceptions:
           - java.net.SocketTimeoutException
         ignoreExceptions:
-          - org.springframework.web.client.HttpClientErrorException  # 4xx = client error, don't retry
+          - org.springframework.web.client.HttpClientErrorException # 4xx = client error, don't retry
 ```
 
 ### 4. Structured Logging for Integration Points
@@ -543,7 +543,7 @@ public class ExternalApiClient {
             log.info("API call succeeded: query={}, duration={}ms", query, System.currentTimeMillis() - start);
             return response;
         } catch (Exception ex) {
-            log.error("API call failed: query={}, duration={}ms, error={}", 
+            log.error("API call failed: query={}, duration={}ms, error={}",
                 query, System.currentTimeMillis() - start, ex.getMessage());
             throw ex;
         }
@@ -593,7 +593,7 @@ Pass correlation IDs through the entire request chain for distributed tracing.
 public class CorrelationIdFilter extends OncePerRequestFilter {
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) 
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
         String correlationId = req.getHeader("X-Correlation-ID");
         if (correlationId == null) {
